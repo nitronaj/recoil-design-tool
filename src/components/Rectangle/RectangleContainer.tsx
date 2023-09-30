@@ -1,13 +1,19 @@
-import {Box} from '@chakra-ui/react'
-import {ElementStyle} from './Rectangle'
+import {Box} from '@chakra-ui/react';
+import {ElementStyle} from './Rectangle';
 
 type RectangleContainerProps = {
-    position: ElementStyle['position']
-    size: ElementStyle['size']
-    onSelect: () => void
-}
+    position: ElementStyle['position'];
+    size: ElementStyle['size'];
+    onSelect: () => void;
+    children: React.ReactNode;
+};
 
-export const RectangleContainer: React.FC<RectangleContainerProps> = ({children, size, position, onSelect}) => {
+export const RectangleContainer: React.FC<RectangleContainerProps> = ({
+    children,
+    size,
+    position,
+    onSelect,
+}) => {
     return (
         <Box
             position="absolute"
@@ -17,5 +23,5 @@ export const RectangleContainer: React.FC<RectangleContainerProps> = ({children,
         >
             {children}
         </Box>
-    )
-}
+    );
+};

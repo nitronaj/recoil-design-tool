@@ -12,7 +12,10 @@ import {selectedElementState} from './Canvas';
 import {elementState} from './components/Rectangle/Rectangle';
 import {get as getPath, set as setPath} from 'lodash';
 
-const editProperySelector = selectorFamily<number, {path: string; id: number}>({
+export const editPropertySelector = selectorFamily<
+    any,
+    {path: string; id: number}
+>({
     key: 'editProperty',
     get:
         ({path, id}) =>
@@ -46,29 +49,32 @@ export const EditProperties = () => {
                     path="style.position.top"
                     id={selectedElement}
                 />
-                {/* <Property
+                <Property
                     label="Left"
-                    value={element.style.position.left}
-                    onChange={(left) => setPosition('left', left)}
-                /> */}
+                    path="style.position.left"
+                    id={selectedElement}
+                />
             </Section>
-            {/* <Section heading="Position">
+            <Section heading="Position">
                 <Property
                     label="Width"
-                    value={element.style.size.width}
-                    onChange={(width) => setSize('width', width)}
+                    path="style.size.width"
+                    id={selectedElement}
                 />
                 <Property
                     label="Height"
-                    value={element.style.size.height}
-                    onChange={(height) => setSize('height', height)}
+                    path="style.size.height"
+                    id={selectedElement}
                 />
-            </Section> */}
+            </Section>
         </Card>
     );
 };
 
-const Section: React.FC<{heading: string}> = ({heading, children}) => {
+const Section: React.FC<{heading: string; children: React.ReactNode}> = ({
+    heading,
+    children,
+}) => {
     return (
         <VStack spacing={2} align="flex-start">
             <Text fontWeight="500">{heading}</Text>
@@ -86,7 +92,7 @@ const Property = ({
     path: string;
     id: number;
 }) => {
-    const [value, setValue] = useRecoilState(editProperySelector({path, id}));
+    const [value, setValue] = useRecoilState(editPropertySelector({path, id}));
 
     return (
         <div>
@@ -111,7 +117,7 @@ const Property = ({
     );
 };
 
-const Card: React.FC = ({children}) => (
+const Card: React.FC<{children: React.ReactNode}> = ({children}) => (
     <VStack
         position="absolute"
         top="20px"

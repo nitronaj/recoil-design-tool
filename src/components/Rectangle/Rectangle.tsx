@@ -1,24 +1,31 @@
+import {Suspense, useDeferredValue} from 'react';
 import {atomFamily, useRecoilState} from 'recoil';
 import {selectedElementState} from '../../Canvas';
 import {Drag} from '../Drag';
 import {Resize} from '../Resize';
 import {RectangleContainer} from './RectangleContainer';
 import {RectangleInner} from './RectangleInner';
+import {RectangleLoading} from './RectangleLoading';
 
 export type ElementStyle = {
     position: {top: number; left: number};
     size: {width: number; height: number};
 };
 
-export type Element = {style: ElementStyle};
+export type Element = {
+    style: ElementStyle;
+    image?: {src: string; id: number};
+};
+
+export const defaultStyle = {
+    position: {top: 100, left: 100},
+    size: {width: 200, height: 200},
+};
 
 export const elementState = atomFamily<Element, number>({
     key: 'element',
     default: {
-        style: {
-            position: {top: 100, left: 100},
-            size: {width: 100, height: 100},
-        },
+        style: defaultStyle,
     },
 });
 
@@ -27,6 +34,7 @@ export const Rectangle = ({id}: {id: number}) => {
         useRecoilState(selectedElementState);
 
     const [element, setElement] = useRecoilState(elementState(id));
+    const deferredElement = useDeferredValue(element);
     const selected = id === selectedElement;
 
     return (
@@ -43,7 +51,7 @@ export const Rectangle = ({id}: {id: number}) => {
                 size={element.style.size}
                 onResize={(style) => {
                     setElement({
-                        ...element,
+                        ...deferredElement,
                         style,
                     });
                 }}
@@ -52,6 +60,7 @@ export const Rectangle = ({id}: {id: number}) => {
                     position={element.style.position}
                     onDrag={(position) => {
                         setElement({
+                            ...element,
                             style: {
                                 ...element.style,
                                 position,
@@ -60,7 +69,11 @@ export const Rectangle = ({id}: {id: number}) => {
                     }}
                 >
                     <div>
-                        <RectangleInner selected={selected} />
+                        <Suspense
+                            fallback={<RectangleLoading selected={selected} />}
+                        >
+                            <RectangleInner selected={selected} id={id} />
+                        </Suspense>
                     </div>
                 </Drag>
             </Resize>

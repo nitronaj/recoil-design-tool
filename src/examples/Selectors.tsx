@@ -73,7 +73,7 @@ export const Selectors = () => {
 // You can ignore everything below this line.
 // It's just a bunch of UI components that we're using in this example.
 
-const InputStack: React.FC = ({children}) => {
+const InputStack: React.FC<{children: React.ReactNode}> = ({children}) => {
     return (
         <HStack
             width="300px"
